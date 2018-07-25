@@ -5,6 +5,16 @@ var qs = require('querystring');
 var templet = require('./lib/templet.js')
 var path = require('path');
 var sanitizeHtml = require('sanitize-html');
+var mysql = require('mysql');
+
+var db = mysql.createConnection({
+  host     : '115.68.221.96',
+  port     : 3306,
+  user     : 'test',
+  password : 'eoflal72!@',
+  database : 'TEST'
+});
+db.connect();
 
 var app = http.createServer(function(request,response){
     var _url = request.url;
@@ -12,16 +22,17 @@ var app = http.createServer(function(request,response){
     var pathName = url.parse(_url,true).pathname;
     if(pathName === '/'){
       if(queryData.id === undefined) {
-        fs.readdir('./data/', function(error, filelist){
+        db.query(`SELECT * from topic`, function(error, topics){
           var title = 'Welcome';
           var description = 'Hello, Node.js';
-          var list = templet.list(filelist);
+          var list = templet.list(topics);
           var html = templet.html(title, list, `<h2>${title}</h2>${description}`, `<a href="/create">create</a>`);
           response.writeHead(200);
           response.end(html);
         });
       }
       else {
+        /*
         fs.readdir('./data/', function(error, filelist){
           var filteredID = path.parse(queryData.id).base;
         fs.readFile(`data/${filteredID}`, 'utf8', function(err, description){
@@ -42,9 +53,30 @@ var app = http.createServer(function(request,response){
             response.end(html);
           });
         });
-      }
+      }*/
+      db.query(`SELECT * from topic`, function(error, topics){
+        if(error){
+          throw error
+        }
+        db.query(`SELECT * from topic where id=?`,[queryData.id], function(error2, topic){
+          var title = topic[0].title;
+          var description = topic[0].description;
+          var list = templet.list(topics);
+          var html = templet.html(title, list, `<h2>${title}</h2>${description}`, `<a href="/create">create</a>
+          <a href="/update?id=${queryData.id}">update</a>
+                      <form action="delete_process" method='post'>
+                        <input type='hidden' name='id' value=${queryData.id}>
+                        <input type='submit' value='delete'>
+                      </form>`);
+          response.writeHead(200);
+          response.end(html);
+        });
+
+      });
     }
+  }
     else if (pathName === '/create'){
+      /*
       fs.readdir('./data/', function(error, filelist){
         var title = 'Welcome';
         var description = 'Hello, Node.js';
@@ -63,6 +95,26 @@ var app = http.createServer(function(request,response){
         response.writeHead(200);
         response.end(html);
         });
+        */
+        db.query(`SELECT * from topic`, function(error, topics){
+          var title = 'Create';
+          var list = templet.list(topics);
+          var html = templet.html(title, list, `
+
+            <form action="/create_process" method="post">
+          <p><input type="text" name="title" placeholder="title"></p>
+          <p>
+            <textarea name="description" placeholder = "description"></textarea>
+          </p>
+          <p>
+            <input type="submit">
+          </p>
+          </form>
+          `, `<a href="/create">create</a>`);
+          response.writeHead(200);
+          response.end(html);
+        });
+
     } else if (pathName === '/create_process'){
         var body = '';
         request.on('data', function(data){
@@ -126,8 +178,8 @@ var app = http.createServer(function(request,response){
       request.on('end', function(){
           var post = qs.parse(body);
           var id = post.id;
-          var filteredID = path.parse(id).base;
-          fs.unlink(`data/${filteredID}`, function(error){
+          console.log(id);
+          fs.unlink(`data/${id}`, function(error){
             response.writeHead(302, {Location: `/`});
             response.end();
           });
