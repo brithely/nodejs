@@ -1,0 +1,25 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "nodejs 연습을 하면서 작성한 코드",
+  "main": "main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brithely/nodejs_practice.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brithely/nodejs_practice/issues"
+  },
+  "homepage": "https://github.com/brithely/nodejs_practice#readme",
+  "dependencies": {
+    "sanitize-html": "^1.18.2"
+  }
+}
