@@ -23,31 +23,33 @@ var app = http.createServer(function(request,response){
     var _url = request.url;
     var queryData = url.parse(_url, true).query;
     var pathName = url.parse(_url,true).pathname;
-    if(pathName === '/'){
+    if (pathName === '/'){
         index.home(request, response);
-    } else if (pathName === '/topic' && queryData.id != undefined){
+    } else if (pathName === '/topic' && queryData.page != 1){
       topic.page(request, response);
-    } else if (pathName === '/topic'){
+    } else if (pathName === '/topic' && queryData.id != undefined){
+      topic.pageSelected(request, response);
+    } else if (pathName === '/topic' && queryData.page != undefined){
       topic.home(request, response);
-    } else if (pathName === '/create'){
+    } else if (pathName === '/topic/create'){
       topic.create(request, response);
-    } else if (pathName === '/create_process'){
+    } else if (pathName === '/topic/create_process'){
       topic.create_process(request, response);
-    } else if(pathName === '/update'){
+    } else if (pathName === '/topic/update'){
       topic.update(request, response);
-    } else if(pathName === '/update_process'){
+    } else if (pathName === '/topic/update_process'){
       topic.update_process(request, response);
-    } else if(pathName === '/delete_process'){
+    } else if (pathName === '/topic/delete_process'){
       topic.delete_process(request, response);
-    } else if(pathName === '/author'){
+    } else if (pathName === '/author'){
       author.home(request, response);
-    } else if(pathName === '/author/create_process'){
+    } else if (pathName === '/author/create_process'){
       author.create_process(request, response);
-    } else if(pathName === '/author/update'){
+    } else if (pathName === '/author/update'){
       author.update(request, response);
-    } else if(pathName === '/author/update_process'){
+    } else if (pathName === '/author/update_process'){
       author.update_process(request, response);
-    } else if(pathName === '/author/delete_process'){
+    } else if (pathName === '/author/delete_process'){
       author.delete_process(request, response);
     } else {
       response.writeHead(404);
