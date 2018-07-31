@@ -13,18 +13,43 @@ var http = require('http');
 var fs = require('fs');
 var url = require('url');
 var qs = require('querystring');
-var templet = require('./lib/templet.js')
-var db = require('./lib/db')
-var topic = require('./lib/topic')
-var author = require('./lib/author')
-var index = require('./lib/index')
+var templet = require('./lib/templet.js');
+var db = require('./lib/db');
+var topic = require('./lib/topic');
+var author = require('./lib/author');
+var index = require('./lib/index');
+var cookie = require('cookie');
+
+/*
+function authIsOwner(request, response){
+  var isOwner = false;
+  var cookies = {}
+  if(request.headers.cookie){
+    cookies = cookie.parse(request.headers.cookie);
+  }
+  if(cookies.email === 'test@test.com' && cookies.password === '111111'){
+    isOwner = true;
+  }
+    console.log(cookies);
+  return isOwner;
+}
+
+function authStatusUI(){
+  var authStatusUI = '<a href="/login">login</a>';
+  if(authIsOwner(request,response)) {
+      authStatusUI = '<a href="/logout_process">logout</a>'
+  }
+  return authStatusUI;
+}
+*/
 
 var app = http.createServer(function(request,response){
     var _url = request.url;
     var queryData = url.parse(_url, true).query;
     var pathName = url.parse(_url,true).pathname;
+
     if (pathName === '/'){
-        index.home(request, response);
+      index.home(request, response);
     } else if (pathName === '/topic' && queryData.page != 1){
       topic.page(request, response);
     } else if (pathName === '/topic' && queryData.id != undefined){
@@ -51,6 +76,12 @@ var app = http.createServer(function(request,response){
       author.update_process(request, response);
     } else if (pathName === '/author/delete_process'){
       author.delete_process(request, response);
+    } else if (pathName === '/login'){
+      index.login(request, response);
+    } else if (pathName === '/login_process'){
+      index.login_process(request, response);
+    } else if (pathName === '/logout_process'){
+      index.logout_process(request, response);
     } else {
       response.writeHead(404);
       response.end('Not Found');
