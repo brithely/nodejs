@@ -50,11 +50,11 @@ var app = http.createServer(function(request,response){
 
     if (pathName === '/'){
       index.home(request, response);
-    } else if (pathName === '/topic' && queryData.page != 1){
+    } else if (pathName === '/topic' && queryData.page !== 1 && queryData.id === undefined){
       topic.page(request, response);
-    } else if (pathName === '/topic' && queryData.id != undefined){
+    } else if (pathName === '/topic' && queryData.id !== undefined){
       topic.pageSelected(request, response);
-    } else if (pathName === '/topic' && queryData.page != undefined){
+    } else if (pathName === '/topic' && queryData.page !== undefined){
       topic.home(request, response);
     } else if (pathName === '/topic/create'){
       topic.create(request, response);
